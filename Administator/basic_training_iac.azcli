@@ -1,0 +1,68 @@
+# Login to Azure
+
+az login
+
+# <-- Azure Resources -------------------------------------------------->
+
+# Variables
+RG="rg_sb_eastus_192200_1_173508494525" # update resource group
+LOCATION="eastus"
+VNET_NAME="vestaOps"
+#SUBNET_NAME="SubnetB"
+VM_SIZE="Standard_B2ms"
+USERNAME="bobbyabuchi"
+PASSWORD="Bobbyabuchi24" # Always better to use SSH keys instead
+
+# Create the virtual network
+az network vnet create \
+  --resource-group $RG \
+  --name $VNET_NAME \
+  --address-prefix 10.0.0.0/16 \
+  --location $LOCATION
+
+# Create SubnetA
+az network vnet subnet create \
+  --resource-group $RG \
+  --vnet-name $VNET_NAME \
+  --name SubnetA \
+  --address-prefix 10.0.1.0/24
+
+# Create SubnetB
+az network vnet subnet create \
+  --resource-group $RG \
+  --vnet-name $VNET_NAME \
+  --name SubnetB \
+  --address-prefix 10.0.2.0/24
+
+# Create three Linux VMs
+SUBNET_NAME="SubnetB"
+for VMPod in 1 2 3; do
+  az vm create \
+    --resource-group $RG \
+    --name VMPod$VMPod \
+    --location $LOCATION \
+    --vnet-name $VNET_NAME \
+    --subnet $SUBNET_NAME \
+    --image Ubuntu2204 \
+    --size $VM_SIZE \
+    --admin-username $USERNAME \
+    --admin-password $PASSWORD \
+    --no-wait
+done
+
+az vm create \
+  --resource-group $RG \
+  --name Server1 \
+  --location $LOCATION \
+  --vnet-name $VNET_NAME \
+  --subnet SubentA \
+  --image Ubuntu2204 \
+  --size $VM_SIZE \
+  --admin-username $USERNAME \
+  --admin-password $PASSWORD \
+  --no-wait
+
+# <-- Azure Resources -------------------------------------------------->
+
+# list storage accounts
+az storage account list --output table
