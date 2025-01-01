@@ -11,7 +11,7 @@ VNET_NAME="vestaOps"
 #SUBNET_NAME="SubnetB"
 VM_SIZE="Standard_B2ms"
 USERNAME="bobbyabuchi"
-PASSWORD="Bobbyabuchi24" # Always better to use SSH keys instead
+PASSWORD="ComplexPassword25" # Always better to use SSH keys instead
 
 # Create the virtual network
 az network vnet create \
