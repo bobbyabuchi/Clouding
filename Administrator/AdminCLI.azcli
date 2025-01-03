@@ -1,2 +1,25 @@
 # Uploading Blobs..........
 
+az login
+RG="rg_sb_eastus_192200_1_173588954576" 
+
+# list storage account
+az storage account list
+az storage account list --query [].name # just the account names
+
+# get storage account access keys
+az storage account keys list --account-name hcsdev25 --resource-group $RG --output table
+
+SA="hcsdev25" # store account name in a variable
+AK="secret key string" # storage access key - (for demo purpose...don't bother)
+
+# createa a blob container in storage account
+az storage container create --name hcsdevstore --account-name $SA --account-key $AK
+
+filepath="/c/Users/bobby/ZenDrive/clients_data.txt"
+
+# upload a file
+az storage blob upload --container-name hcsdevstore --name clients_data.txt --file $filepath --account-name $SA --account-key $AK
+
+# verufiy upload
+az storage blob list --account-key $AK --account-name $SA  --container-name hcsdevstore --query [].name
